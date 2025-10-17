@@ -20,10 +20,14 @@ class AppViewModel {
     var _isRunning = MutableStateFlow(false)
     val isRunning: StateFlow<Boolean> = _isRunning
 
+    var _isCleanButtonEnabled = MutableStateFlow(false)
+    val isCleanButtonEnabled: StateFlow<Boolean> = _isCleanButtonEnabled
+
     private var currentJob: Job? = null
         set(value) {
             field = value
             _isRunning.value = value != null
+            _isCleanButtonEnabled.value = value != null
         }
 
     private fun clearRunOutput() {
@@ -37,6 +41,7 @@ class AppViewModel {
     fun clearOutputAndError() {
         _runResult.value = "Run result will be displayed here."
         clearRunError()
+        _isCleanButtonEnabled.value = true
     }
 
     fun updateCodeInputState(newValue: TextFieldValue) {
