@@ -27,7 +27,7 @@ class AppViewModel {
         set(value) {
             field = value
             _isRunning.value = value != null
-            _isCleanButtonEnabled.value = value != null
+            _isCleanButtonEnabled.value = value == null
         }
 
     private fun clearRunOutput() {
@@ -41,7 +41,7 @@ class AppViewModel {
     fun clearOutputAndError() {
         _runResult.value = "Run result will be displayed here."
         clearRunError()
-        _isCleanButtonEnabled.value = true
+        _isCleanButtonEnabled.value = false
     }
 
     fun updateCodeInputState(newValue: TextFieldValue) {

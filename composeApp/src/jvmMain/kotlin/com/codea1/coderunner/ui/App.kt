@@ -44,7 +44,7 @@ fun App() {
                     },
                 )
                 clearButton(
-                    enabled = !appViewModel.isCleanButtonEnabled.collectAsState().value,
+                    enabled = appViewModel.isCleanButtonEnabled.collectAsState().value,
                     onClearButtonClicked = {
                         appViewModel.clearOutputAndError()
                     }
