@@ -43,9 +43,12 @@ fun App() {
                         appViewModel.onButtonClick()
                     },
                 )
-                clearButton {
-                    appViewModel.clearOutputAndError()
-                }
+                clearButton(
+                    enabled = !appViewModel.isRunning.collectAsState().value || runResult.isNotEmpty() || runError.isNotEmpty(),
+                    onClearButtonClicked = {
+                        appViewModel.clearOutputAndError()
+                    }
+                )
             }
             Box(
                 modifier = Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.background)

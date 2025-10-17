@@ -3,7 +3,7 @@ package com.codea1.coderunner.ui
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material3.Button
@@ -16,17 +16,17 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun clearButton(modifier: Modifier = Modifier, onClearButtonClicked: () -> Unit) {
+fun clearButton(modifier: Modifier = Modifier, enabled: Boolean, onClearButtonClicked: () -> Unit) {
     Button(
         modifier = modifier.padding(8.dp).width(115.dp),
         onClick = onClearButtonClicked,
-        colors = ButtonDefaults.buttonColors().copy(containerColor = MaterialTheme.colorScheme.tertiary)
+        colors = ButtonDefaults.buttonColors().copy(containerColor = MaterialTheme.colorScheme.tertiary),
+        enabled = enabled
     ) {
         Row {
             Icon(
                 imageVector = Icons.Filled.CleaningServices,
-                contentDescription = "Button to run the code",
-                tint = MaterialTheme.colorScheme.onPrimary,
+                contentDescription = "Button to clear the output",
                 modifier = Modifier.padding(end = 4.dp)
             )
             Text("Clear")
@@ -36,8 +36,18 @@ fun clearButton(modifier: Modifier = Modifier, onClearButtonClicked: () -> Unit)
 
 @Preview
 @Composable
-fun ClearButtonPreview() {
+fun ClearButtonPreviewEnabled() {
     clearButton(
-        onClearButtonClicked = {}
+        onClearButtonClicked = {},
+        enabled = true
+    )
+}
+
+@Preview
+@Composable
+fun ClearButtonPreviewDisabled() {
+    clearButton(
+        onClearButtonClicked = {},
+        enabled = false
     )
 }
