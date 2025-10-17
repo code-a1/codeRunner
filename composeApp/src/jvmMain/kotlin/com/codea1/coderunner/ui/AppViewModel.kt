@@ -78,6 +78,10 @@ class AppViewModel {
                 while (true) {
                     if (!(currentJob?.isActive ?: false)) {
                         currentProcess.destroyForcibly()
+                        val exitCode = currentProcess.exitValue()
+                        if (exitCode != 0) {
+                            _runError.value = "Exit code: ${exitCode} \n Process cancelled by the user\n"
+                        }
                         currentJob = null
                         break
                     }
@@ -88,14 +92,14 @@ class AppViewModel {
                 ensureActive()
                 val line = outputBuffer.readLine() ?: break
                 ensureActive()
-                _runResult.value += line + "\n"
+                _runResult.value += "$line\n"
             }
 
             while (true) {
                 ensureActive()
                 val line = errorBuffer.readLine() ?: break
                 ensureActive()
-                _runError.value += line + "\n"
+                _runError.value += if (_runError.value.isEmpty()) "Exit code: ${currentProcess.exitValue()} \n $line\n" else "$line\n"
             }
 
             currentJob = null
