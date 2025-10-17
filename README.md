@@ -6,7 +6,7 @@ codeRunner hilight 10 keywords from the Kotlin syntax while you're writing your 
 ![codeRunner demo](https://github.com/user-attachments/assets/7ca365a3-9e14-4dea-bdea-68961c86af65)
 ## Running instructions
 You can run codeRunner using Gradle (you can install it from [here](https://gradle.org/install/)) with the following command:
-```
+```console
 gradle wrapper
 ./gradlew run
 ```
