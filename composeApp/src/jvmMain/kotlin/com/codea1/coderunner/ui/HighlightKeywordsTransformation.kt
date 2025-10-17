@@ -30,7 +30,6 @@ class HighlightKeywordsTransformation : VisualTransformation {
             }
         }
 
-        //TODO: rivedere
         return TransformedText(
             text = annotatedString,
             offsetMapping = OffsetMapping.Identity

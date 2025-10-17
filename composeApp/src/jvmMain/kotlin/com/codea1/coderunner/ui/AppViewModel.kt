@@ -1,13 +1,9 @@
 package com.codea1.coderunner.ui
 
 import androidx.compose.ui.text.input.TextFieldValue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import java.io.File
 
 class AppViewModel {
@@ -15,9 +11,6 @@ class AppViewModel {
     private val _codeInputState = MutableStateFlow(TextFieldValue())
     val codeInputState = _codeInputState
 
-    fun updateCodeInputState(newValue: TextFieldValue) {
-        _codeInputState.value = newValue
-    }
     private var _runResult: MutableStateFlow<String> = MutableStateFlow("Run result will be displayed here.")
     val runResult: StateFlow<String> = _runResult
 
@@ -27,43 +20,42 @@ class AppViewModel {
     var _isRunning = MutableStateFlow(false)
     val isRunning: StateFlow<Boolean> = _isRunning
 
-    fun setRunResult(newResult: String) {
-        _runResult.value = newResult
-    }
+    private var currentJob: Job? = null
+        set(value) {
+            field = value
+            _isRunning.value = value != null
+        }
 
-    private fun clearRunResult() {
+    private fun clearRunOutput() {
         _runResult.value = ""
-    }
-
-    fun resetRunResult() {
-        _runResult.value = "Run result will be displayed here."
     }
 
     private fun clearRunError() {
         _runError.value = ""
     }
 
-    private var currentJob: Job? = null
-        set(value) {
-            field = value
-            _isRunning.value = value != null
-            }
+    fun clearOutputAndError() {
+        _runResult.value = "Run result will be displayed here."
+        clearRunError()
+    }
 
-    fun onButtonClick(){
+    fun updateCodeInputState(newValue: TextFieldValue) {
+        _codeInputState.value = newValue
+    }
+
+    fun onButtonClick() {
         if (currentJob != null) {
-            //stopping = true
             currentJob?.cancel()
-        }else {
+        } else {
             runCode()
         }
     }
 
-    fun runCode(){
+    fun runCode() {
         File("script.kts").writeText(codeInputState.value.text)
 
-
         currentJob = CoroutineScope(Dispatchers.IO).launch {
-            val command = when (System.getProperty("os.name").lowercase().contains("win")){
+            val command = when (System.getProperty("os.name").lowercase().contains("win")) {
                 true -> listOf("cmd", "/c", "kotlinc", "-script", "script.kts")
                 false -> listOf("kotlinc", "-script", "script.kts")
             }
@@ -74,7 +66,7 @@ class AppViewModel {
             val outputBuffer = currentProcess.inputStream.bufferedReader()
             val errorBuffer = currentProcess.errorStream.bufferedReader()
 
-            clearRunResult()
+            clearRunOutput()
             clearRunError()
 
             CoroutineScope(Dispatchers.IO).launch {
@@ -82,7 +74,6 @@ class AppViewModel {
                     if (!(currentJob?.isActive ?: false)) {
                         currentProcess.destroyForcibly()
                         currentJob = null
-                        //stopping = false
                         break
                     }
                 }
