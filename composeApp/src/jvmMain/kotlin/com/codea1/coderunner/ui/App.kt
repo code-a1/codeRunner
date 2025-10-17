@@ -25,7 +25,7 @@ fun App() {
                 modifier = Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.background),
             ) {
                 CodeInput(
-                    textState = codeInputState,
+                    textFieldValue = codeInputState.value,
                     onValueChange = {
                         appViewModel.updateCodeInputState(it)
                     }

@@ -1,5 +1,6 @@
 package com.codea1.coderunner.ui
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,4 +34,31 @@ fun OutputAndErrorDisplay(runResult: String, runError: String, modifier: Modifie
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun OutputAndErrorDisplayPreviewOnError() {
+    OutputAndErrorDisplay(
+        runResult = "",
+        runError = "Error: Something went wrong!"
+    )
+}
+
+@Preview
+@Composable
+fun OutputAndErrorDisplayPreviewOnResult() {
+    OutputAndErrorDisplay(
+        runResult = "Output: Hello, World!",
+        runError = ""
+    )
+}
+
+@Preview
+@Composable
+fun OutputAndErrorDisplayPreviewOnBoth() {
+    OutputAndErrorDisplay(
+        runResult = "Output: Hello, World!",
+        runError = "Error: Something went wrong!"
+    )
 }
