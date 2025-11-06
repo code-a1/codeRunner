@@ -122,7 +122,7 @@ class AppViewModel {
                     }
                 }
             } catch (_: CancellationException) {
-                currentProcess.children().forEach { processHandle -> processHandle.destroyForcibly() };
+                currentProcess.children().forEach { processHandle -> processHandle.destroyForcibly() }
                 currentProcess.destroyForcibly()
                 currentJob = null
             } finally {
