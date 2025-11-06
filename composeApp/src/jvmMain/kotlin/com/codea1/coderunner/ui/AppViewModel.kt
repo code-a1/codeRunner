@@ -101,14 +101,14 @@ class AppViewModel {
             try {
                 while (true) {
                     ensureActive()
-                    val line = async {outputBuffer.readLine()}.await() ?: break
+                    val line = async { outputBuffer.readLine() }.await() ?: break
                     ensureActive()
                     _runResult.value += "$line\n"
                 }
 
                 while (true) {
                     ensureActive()
-                    val line = async {errorBuffer.readLine()}.await() ?: break
+                    val line = async { errorBuffer.readLine() }.await() ?: break
                     ensureActive()
                     _runError.value = buildAnnotatedString {
                         append(_runError.value)
@@ -122,10 +122,10 @@ class AppViewModel {
                     }
                 }
             } catch (_: CancellationException) {
-                currentProcess.children().forEach{processHandle -> processHandle.destroyForcibly()};
+                currentProcess.children().forEach { processHandle -> processHandle.destroyForcibly() };
                 currentProcess.destroyForcibly()
                 currentJob = null
-            }finally {
+            } finally {
                 outputBuffer.close()
                 errorBuffer.close()
             }
