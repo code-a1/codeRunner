@@ -98,37 +98,35 @@ class AppViewModel {
             clearRunOutput()
             clearRunError()
 
-            CoroutineScope(Dispatchers.IO).launch {
+            try {
                 while (true) {
-                    if (!(currentJob?.isActive ?: false)) {
-                        currentProcess.destroyForcibly()
-                        currentJob = null
-                        break
+                    ensureActive()
+                    val line = async {outputBuffer.readLine()}.await() ?: break
+                    ensureActive()
+                    _runResult.value += "$line\n"
+                }
+
+                while (true) {
+                    ensureActive()
+                    val line = async {errorBuffer.readLine()}.await() ?: break
+                    ensureActive()
+                    _runError.value = buildAnnotatedString {
+                        append(_runError.value)
+                        append(
+                            RunErrorStringAnnotation.getAnnotatedString(
+                                if (_runError.value.isEmpty()) "Exit code: ${currentProcess.exitValue()} \n $line\n" else "$line\n",
+                                onErrorClick = { line, position ->
+                                    setCurrentSelection(line, position)
+                                })
+                        )
                     }
                 }
-            }
-
-            while (true) {
-                ensureActive()
-                val line = outputBuffer.readLine() ?: break
-                ensureActive()
-                _runResult.value += "$line\n"
-            }
-
-            while (true) {
-                ensureActive()
-                val line = errorBuffer.readLine() ?: break
-                ensureActive()
-                _runError.value = buildAnnotatedString {
-                    append(_runError.value)
-                    append(
-                        RunErrorStringAnnotation.getAnnotatedString(
-                            if (_runError.value.isEmpty()) "Exit code: ${currentProcess.exitValue()} \n $line\n" else "$line\n",
-                            onErrorClick = { line, position ->
-                                setCurrentSelection(line, position)
-                            })
-                    )
-                }
+            } catch (_: CancellationException) {
+                currentProcess.destroyForcibly()
+                currentJob = null
+            }finally {
+                outputBuffer.close()
+                errorBuffer.close()
             }
 
             currentJob = null
