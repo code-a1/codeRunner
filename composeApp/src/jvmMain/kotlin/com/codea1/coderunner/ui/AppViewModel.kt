@@ -1,5 +1,9 @@
 package com.codea1.coderunner.ui
 
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,14 +18,16 @@ class AppViewModel {
     private var _runResult: MutableStateFlow<String> = MutableStateFlow("Run result will be displayed here.")
     val runResult: StateFlow<String> = _runResult
 
-    private var _runError: MutableStateFlow<String> = MutableStateFlow("")
-    val runError: StateFlow<String> = _runError
+    private var _runError: MutableStateFlow<AnnotatedString> = MutableStateFlow(buildAnnotatedString { append("") })
+    val runError: StateFlow<AnnotatedString> = _runError
 
     var _isRunning = MutableStateFlow(false)
     val isRunning: StateFlow<Boolean> = _isRunning
 
     var _isCleanButtonEnabled = MutableStateFlow(false)
     val isCleanButtonEnabled: StateFlow<Boolean> = _isCleanButtonEnabled
+
+    val codeInputFocusRequester = FocusRequester()
 
     private var currentJob: Job? = null
         set(value) {
@@ -35,7 +41,7 @@ class AppViewModel {
     }
 
     private fun clearRunError() {
-        _runError.value = ""
+        _runError.value = buildAnnotatedString { append("") }
     }
 
     fun clearOutputAndError() {
@@ -54,6 +60,24 @@ class AppViewModel {
         } else {
             runCode()
         }
+    }
+
+    fun setCurrentSelection(line: Int, position: Int?) {
+        var index = 0
+        val lines = _codeInputState.value.text.lines()
+        for (i in 0..<line - 1) {
+            index += if (lines[i].isNotEmpty()) lines[i].length + 1 else 1
+        }
+
+        val selection = when (position) {
+            null -> TextRange(start = index, end = index + lines[line - 1].length)
+            else -> TextRange(index = index + position - 1)
+        }
+
+        _codeInputState.value =
+            _codeInputState.value.copy(selection = selection)
+
+        codeInputFocusRequester.requestFocus()
     }
 
     fun runCode() {
@@ -95,7 +119,16 @@ class AppViewModel {
                 ensureActive()
                 val line = errorBuffer.readLine() ?: break
                 ensureActive()
-                _runError.value += if (_runError.value.isEmpty()) "Exit code: ${currentProcess.exitValue()} \n $line\n" else "$line\n"
+                _runError.value = buildAnnotatedString {
+                    append(_runError.value)
+                    append(
+                        RunErrorStringAnnotation.getAnnotatedString(
+                            if (_runError.value.isEmpty()) "Exit code: ${currentProcess.exitValue()} \n $line\n" else "$line\n",
+                            onErrorClick = { line, position ->
+                                setCurrentSelection(line, position)
+                            })
+                    )
+                }
             }
 
             currentJob = null

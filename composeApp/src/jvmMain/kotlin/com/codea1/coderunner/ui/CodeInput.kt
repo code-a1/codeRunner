@@ -9,6 +9,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 fun CodeInput(
     textFieldValue: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    focusRequester: FocusRequester,
     modifier: Modifier = Modifier
 ) {
     BasicTextField(
@@ -27,7 +30,8 @@ fun CodeInput(
         modifier = modifier
             .padding(16.dp)
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
+            .horizontalScroll(rememberScrollState())
+            .focusRequester(focusRequester),
         visualTransformation = HighlightKeywordsTransformation(),
         decorationBox = { innerTextField ->
             if (textFieldValue.text.isEmpty()) {
@@ -48,6 +52,7 @@ fun CodeInputPreview() {
     val textFieldValue = TextFieldValue(sampleCode)
     CodeInput(
         textFieldValue = textFieldValue,
-        onValueChange = {}
+        onValueChange = {},
+        focusRequester = FocusRequester()
     )
 }

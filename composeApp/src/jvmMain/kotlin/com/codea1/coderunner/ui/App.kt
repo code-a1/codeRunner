@@ -17,6 +17,7 @@ fun App() {
     val runResult by appViewModel.runResult.collectAsState()
     val runError by appViewModel.runError.collectAsState()
     val codeInputState = appViewModel.codeInputState.collectAsState()
+    val focusRequester = appViewModel.codeInputFocusRequester
     MaterialTheme {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -28,7 +29,8 @@ fun App() {
                     textFieldValue = codeInputState.value,
                     onValueChange = {
                         appViewModel.updateCodeInputState(it)
-                    }
+                    },
+                    focusRequester = focusRequester
                 )
             }
             Column(

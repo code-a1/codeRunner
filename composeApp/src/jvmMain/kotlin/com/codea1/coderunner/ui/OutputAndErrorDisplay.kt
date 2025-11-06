@@ -8,10 +8,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun OutputAndErrorDisplay(runResult: String, runError: String, modifier: Modifier = Modifier) {
+fun OutputAndErrorDisplay(runResult: String, runError: AnnotatedString, modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier.padding(16.dp),
     ) {
@@ -41,7 +43,7 @@ fun OutputAndErrorDisplay(runResult: String, runError: String, modifier: Modifie
 fun OutputAndErrorDisplayPreviewOnError() {
     OutputAndErrorDisplay(
         runResult = "",
-        runError = "Error: Something went wrong!"
+        runError = buildAnnotatedString { append("Error: Something went wrong!") }
     )
 }
 
@@ -50,7 +52,7 @@ fun OutputAndErrorDisplayPreviewOnError() {
 fun OutputAndErrorDisplayPreviewOnResult() {
     OutputAndErrorDisplay(
         runResult = "Output: Hello, World!",
-        runError = ""
+        runError = buildAnnotatedString { append("") }
     )
 }
 
@@ -59,6 +61,15 @@ fun OutputAndErrorDisplayPreviewOnResult() {
 fun OutputAndErrorDisplayPreviewOnBoth() {
     OutputAndErrorDisplay(
         runResult = "Output: Hello, World!",
-        runError = "Error: Something went wrong!"
+        runError = buildAnnotatedString { append("Error: Something went wrong!") }
+    )
+}
+
+@Preview
+@Composable
+fun OutputAndErrorDisplayClickableError() {
+    OutputAndErrorDisplay(
+        runResult = "",
+        runError = RunErrorStringAnnotation.getAnnotatedString("script:2:1: error: cannot find 'foo' in scope") { _, _ -> }
     )
 }
