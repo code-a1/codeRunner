@@ -1,5 +1,6 @@
 package com.codea1.coderunner.ui
 
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,28 +75,27 @@ class AppViewModel {
             clearRunOutput()
             clearRunError()
 
-            CoroutineScope(Dispatchers.IO).launch {
+            try {
                 while (true) {
-                    if (!(currentJob?.isActive ?: false)) {
-                        currentProcess.destroyForcibly()
-                        currentJob = null
-                        break
-                    }
+                    ensureActive()
+                    val line = async { outputBuffer.readLine() }.await() ?: break
+                    ensureActive()
+                    _runResult.value += "$line\n"
                 }
-            }
 
-            while (true) {
-                ensureActive()
-                val line = outputBuffer.readLine() ?: break
-                ensureActive()
-                _runResult.value += "$line\n"
-            }
-
-            while (true) {
-                ensureActive()
-                val line = errorBuffer.readLine() ?: break
-                ensureActive()
-                _runError.value += if (_runError.value.isEmpty()) "Exit code: ${currentProcess.exitValue()} \n $line\n" else "$line\n"
+                while (true) {
+                    ensureActive()
+                    val line = async { errorBuffer.readLine() }.await() ?: break
+                    ensureActive()
+                    _runError.value += if (_runError.value.isEmpty()) "Exit code: ${currentProcess.exitValue()} \n $line\n" else "$line\n"
+                }
+            } catch (_: CancellationException) {
+                currentProcess.children().forEach { processHandle -> processHandle.destroyForcibly() }
+                currentProcess.destroyForcibly()
+                currentJob = null
+            } finally {
+                outputBuffer.close()
+                errorBuffer.close()
             }
 
             currentJob = null
