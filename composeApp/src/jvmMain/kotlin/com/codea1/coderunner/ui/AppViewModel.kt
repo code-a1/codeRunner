@@ -22,10 +22,10 @@ class AppViewModel: ViewModel() {
     private var _runError: MutableStateFlow<AnnotatedString> = MutableStateFlow(buildAnnotatedString { append("") })
     val runError: StateFlow<AnnotatedString> = _runError
 
-    var _isRunning = MutableStateFlow(false)
+    private var _isRunning = MutableStateFlow(false)
     val isRunning: StateFlow<Boolean> = _isRunning
 
-    var _isCleanButtonEnabled = MutableStateFlow(false)
+    private var _isCleanButtonEnabled = MutableStateFlow(false)
     val isCleanButtonEnabled: StateFlow<Boolean> = _isCleanButtonEnabled
 
     val codeInputFocusRequester = FocusRequester()
