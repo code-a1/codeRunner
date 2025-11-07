@@ -18,7 +18,10 @@ fun App() {
     val runResult by appViewModel.runResult.collectAsState()
     val runError by appViewModel.runError.collectAsState()
     val codeInputState = appViewModel.codeInputState.collectAsState()
+    val isRunning by appViewModel.isRunning.collectAsState()
+    val isCleanButtonEnabled by appViewModel.isCleanButtonEnabled.collectAsState()
     val focusRequester = appViewModel.codeInputFocusRequester
+
     MaterialTheme {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -31,7 +34,8 @@ fun App() {
                     onValueChange = {
                         appViewModel.updateCodeInputState(it)
                     },
-                    focusRequester = focusRequester
+                    focusRequester = focusRequester,
+                    isRunning = isRunning,
                 )
             }
             Column(
@@ -41,13 +45,14 @@ fun App() {
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 RunCodeButton(
-                    isRunning = appViewModel.isRunning.collectAsState(),
+                    isRunning = isRunning,
                     onRunButtonClicked = {
                         appViewModel.onButtonClick()
                     },
                 )
                 clearButton(
                     enabled = appViewModel.isCleanButtonEnabled.collectAsState().value,
+                    enabled = isCleanButtonEnabled,
                     onClearButtonClicked = {
                         appViewModel.clearOutputAndError()
                     }

@@ -20,6 +20,7 @@ fun CodeInput(
     textFieldValue: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     focusRequester: FocusRequester,
+    isRunning: Boolean,
     modifier: Modifier = Modifier
 ) {
     BasicTextField(
@@ -41,7 +42,8 @@ fun CodeInput(
                 )
             }
             innerTextField()
-        }
+        },
+        enabled = !isRunning
     )
 }
 
@@ -53,6 +55,7 @@ fun CodeInputPreview() {
     CodeInput(
         textFieldValue = textFieldValue,
         onValueChange = {},
-        focusRequester = FocusRequester()
+        focusRequester = FocusRequester(),
+        isRunning = false
     )
 }
