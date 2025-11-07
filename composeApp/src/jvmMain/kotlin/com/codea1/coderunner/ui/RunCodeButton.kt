@@ -11,18 +11,17 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RunCodeButton(isRunning: State<Boolean>, onRunButtonClicked: () -> Unit, modifier: Modifier = Modifier) {
+fun RunCodeButton(isRunning: Boolean, onRunButtonClicked: () -> Unit, modifier: Modifier = Modifier) {
     Button(
         modifier = modifier.padding(8.dp).width(115.dp),
         onClick = onRunButtonClicked,
     ) {
         Row {
-            if (isRunning.value) {
+            if (isRunning) {
                 Icon(
                     imageVector = Icons.Filled.Pause,
                     contentDescription = "Button to run the code",

@@ -8,15 +8,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
 fun App() {
-    val appViewModel = AppViewModel()
+    val appViewModel = viewModel { AppViewModel() }
     val runResult by appViewModel.runResult.collectAsState()
     val runError by appViewModel.runError.collectAsState()
-    val codeInputState = appViewModel.codeInputState.collectAsState()
+    val codeInputState by appViewModel.codeInputState.collectAsState()
+    val isRunning by appViewModel.isRunning.collectAsState()
+    val isCleanButtonEnabled by appViewModel.isCleanButtonEnabled.collectAsState()
+
     MaterialTheme {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -25,10 +29,11 @@ fun App() {
                 modifier = Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.background),
             ) {
                 CodeInput(
-                    textFieldValue = codeInputState.value,
+                    textFieldValue = codeInputState,
                     onValueChange = {
                         appViewModel.updateCodeInputState(it)
-                    }
+                    },
+                    isRunning = isRunning
                 )
             }
             Column(
@@ -38,13 +43,13 @@ fun App() {
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 RunCodeButton(
-                    isRunning = appViewModel.isRunning.collectAsState(),
+                    isRunning = isRunning,
                     onRunButtonClicked = {
                         appViewModel.onButtonClick()
                     },
                 )
-                clearButton(
-                    enabled = appViewModel.isCleanButtonEnabled.collectAsState().value,
+                ClearButton(
+                    enabled = isCleanButtonEnabled,
                     onClearButtonClicked = {
                         appViewModel.clearOutputAndError()
                     }

@@ -1,13 +1,13 @@
 package com.codea1.coderunner.ui
 
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 
-class AppViewModel {
+class AppViewModel: ViewModel() {
 
     private val _codeInputState = MutableStateFlow(TextFieldValue())
     val codeInputState = _codeInputState

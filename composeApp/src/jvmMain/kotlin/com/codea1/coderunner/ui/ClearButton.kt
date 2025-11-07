@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun clearButton(modifier: Modifier = Modifier, enabled: Boolean, onClearButtonClicked: () -> Unit) {
+fun ClearButton(modifier: Modifier = Modifier, enabled: Boolean, onClearButtonClicked: () -> Unit) {
     Button(
         modifier = modifier.padding(8.dp).width(115.dp),
         onClick = onClearButtonClicked,
@@ -33,7 +33,7 @@ fun clearButton(modifier: Modifier = Modifier, enabled: Boolean, onClearButtonCl
 @Preview
 @Composable
 fun ClearButtonPreviewEnabled() {
-    clearButton(
+    ClearButton(
         onClearButtonClicked = {},
         enabled = true
     )
@@ -42,7 +42,7 @@ fun ClearButtonPreviewEnabled() {
 @Preview
 @Composable
 fun ClearButtonPreviewDisabled() {
-    clearButton(
+    ClearButton(
         onClearButtonClicked = {},
         enabled = false
     )

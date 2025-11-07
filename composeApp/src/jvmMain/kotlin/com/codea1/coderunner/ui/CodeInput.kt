@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 fun CodeInput(
     textFieldValue: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    isRunning: Boolean,
     modifier: Modifier = Modifier
 ) {
     BasicTextField(
@@ -37,7 +38,8 @@ fun CodeInput(
                 )
             }
             innerTextField()
-        }
+        },
+        enabled = !isRunning
     )
 }
 
@@ -48,6 +50,7 @@ fun CodeInputPreview() {
     val textFieldValue = TextFieldValue(sampleCode)
     CodeInput(
         textFieldValue = textFieldValue,
-        onValueChange = {}
+        onValueChange = {},
+        isRunning = false
     )
 }
