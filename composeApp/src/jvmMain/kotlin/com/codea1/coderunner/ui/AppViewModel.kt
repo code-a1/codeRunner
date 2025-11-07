@@ -5,12 +5,13 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 
-class AppViewModel {
+class AppViewModel: ViewModel() {
 
     private val _codeInputState = MutableStateFlow(TextFieldValue())
     val codeInputState = _codeInputState

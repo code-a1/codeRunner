@@ -8,12 +8,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
 fun App() {
-    val appViewModel = AppViewModel()
+    val appViewModel = viewModel { AppViewModel() }
     val runResult by appViewModel.runResult.collectAsState()
     val runError by appViewModel.runError.collectAsState()
     val codeInputState = appViewModel.codeInputState.collectAsState()
