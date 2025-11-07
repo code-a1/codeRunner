@@ -17,7 +17,7 @@ fun App() {
     val appViewModel = viewModel { AppViewModel() }
     val runResult by appViewModel.runResult.collectAsState()
     val runError by appViewModel.runError.collectAsState()
-    val codeInputState = appViewModel.codeInputState.collectAsState()
+    val codeInputState by appViewModel.codeInputState.collectAsState()
     val isRunning by appViewModel.isRunning.collectAsState()
     val isCleanButtonEnabled by appViewModel.isCleanButtonEnabled.collectAsState()
     val focusRequester = appViewModel.codeInputFocusRequester
@@ -30,7 +30,7 @@ fun App() {
                 modifier = Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.background),
             ) {
                 CodeInput(
-                    textFieldValue = codeInputState.value,
+                    textFieldValue = codeInputState,
                     onValueChange = {
                         appViewModel.updateCodeInputState(it)
                     },
